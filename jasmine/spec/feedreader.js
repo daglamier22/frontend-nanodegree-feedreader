@@ -60,7 +60,7 @@ $(function() {
          * hiding/showing of the menu element.
          */
         it('ensure menu element is hidden', function() {
-          expect($('body').attr('class')).toBe('menu-hidden');
+          expect($('body').hasClass('menu-hidden')).toBe(true);
         });
 
          /* TODO: Write a test that ensures the menu changes
@@ -71,10 +71,10 @@ $(function() {
         it('ensure menu element changes visibility', function() {
           //click to load menu and test
           $('.menu-icon-link').click();
-          expect($('body').attr('class')).not.toBe('menu-hidden');
+          expect($('body').hasClass('menu-hidden')).toBe(false);
           //click again to hide menu and test
           $('.menu-icon-link').click();
-          expect($('body').attr('class')).toBe('menu-hidden');
+          expect($('body').hasClass('menu-hidden')).toBe(true);
         });
     });
     /* TODO: Write a new test suite named "Initial Entries" */
@@ -92,7 +92,7 @@ $(function() {
         });
 
         it('ensures feed loaded', function(done) {
-          expect($('.feed').find('.entry').length).not.toBe(0);
+          expect($('.feed .entry').length).not.toBe(0);
           done();
         });
     });
@@ -102,20 +102,25 @@ $(function() {
       * by the loadFeed function that the content actually changes.
       * Remember, loadFeed() is asynchronous.
       */
-      var firstEntry;
+      var entry1feed1;
+      var entry1feed2;
 
       beforeEach(function(done) {
-        //grab text of first entry before changing feeds
-        firstEntry = $('.feed').find('.entry').first().find('h2').text();
         //change feeds
         loadFeed(1, function() {
-          done();
+          //grab text of the first entry of feed 1, then change feeds
+          entry1feed1 = $('.feed').find('.entry').first().find('h2').text();
+          loadFeed(2, function() {
+            //grab text of the first entry of feed 2, then notify test we are done
+            entry1feed2 = $('.feed').find('.entry').first().find('h2').text();
+            done();
+          });
         });
       });
 
       it('ensures feed loaded', function(done) {
         //compare original first entry to the new first entry
-        expect($('.feed').find('.entry').first().find('h2').text()).not.toBe(firstEntry);
+        expect(entry1feed2).not.toBe(entry1feed1);
         done();
       });
     });
